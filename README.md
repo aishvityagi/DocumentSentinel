@@ -8,11 +8,8 @@
 
 ### 👉 Open the Application
 
-**[🔗 Launch DocumentSentinel on Streamlit](https://forensic-rag-agent-123.streamlit.app/)**
+**[https://documentsentinel-jdausf6qc28vvpdth2wwkr.streamlit.app/)**
 
-> ⚠️ Replace `PASTE-YOUR-STREAMLIT-LINK-HERE` with your actual Streamlit deployment URL.
-
----
 
 ## 📌 Project Overview
 

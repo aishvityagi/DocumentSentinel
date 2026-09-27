@@ -18,7 +18,8 @@ from pypdf import PdfReader
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_groq import ChatGroq
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -61,9 +62,9 @@ with st.sidebar:
     st.divider()
 
     st.subheader("API Keys")
-    openai_key = st.text_input(
-        "OpenAI API Key",
-        value=os.getenv("OPENAI_API_KEY", ""),
+    groq_key = st.text_input(
+        "Groq API Key",
+        value=os.getenv("GROQ_API_KEY", ""),
         type="password",
     )
     virustotal_key = st.text_input(
@@ -648,10 +649,7 @@ def risk_assessment(structure, clamav_result, vt_result):
 # RAG
 # ============================================================
 
-def build_vectorstore(documents, api_key, chunk_size=1000, overlap=150):
-    if not api_key:
-        raise ValueError("OpenAI API key is required for RAG.")
-
+def build_vectorstore(documents, chunk_size=1000, overlap=150):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=overlap,
@@ -660,9 +658,8 @@ def build_vectorstore(documents, api_key, chunk_size=1000, overlap=150):
 
     chunks = splitter.split_documents(documents)
 
-    embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small",
-        api_key=api_key,
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-mpnet-base-v2"
     )
 
     return FAISS.from_documents(chunks, embeddings)
@@ -701,7 +698,7 @@ Retrieved context:
         for doc in docs
     )
 
-    llm = ChatOpenAI(
+    llm = ChatGroq(
         model=model_name,
         temperature=0,
         api_key=api_key,
@@ -953,13 +950,13 @@ if "analysis" in st.session_state:
 
         model_name = st.selectbox(
             "Chat model",
-            ["gpt-4o-mini", "gpt-4o"],
+            ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
             key="rag_model",
         )
 
-        if not openai_key:
+        if not groq_key:
             st.info(
-                "Enter your OpenAI API key in the sidebar to use RAG."
+                "Enter your Groq API key in the sidebar to use RAG."
             )
         elif not result["documents"]:
             st.warning(
@@ -976,7 +973,6 @@ if "analysis" in st.session_state:
                     try:
                         st.session_state.vectorstore = build_vectorstore(
                             result["documents"],
-                            openai_key,
                         )
                         st.session_state.chat_history = []
                         st.success("RAG knowledge base is ready.")
@@ -1016,7 +1012,7 @@ if "analysis" in st.session_state:
                                 answer, source_docs = answer_with_rag(
                                     st.session_state.vectorstore,
                                     question,
-                                    openai_key,
+                                    groq_key,
                                     model_name,
                                 )
 

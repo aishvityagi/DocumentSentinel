@@ -8,8 +8,9 @@
 
 ### 👉 Open the Application
 
-**[https://documentsentinel-jdausf6qc28vvpdth2wwkr.streamlit.app/)**
+**[https://documentsentinel-jdausf6qc28vvpdth2wwkr.streamlit.app/](https://documentsentinel-jdausf6qc28vvpdth2wwkr.streamlit.app/)**
 
+---
 
 ## 📌 Project Overview
 
@@ -145,7 +146,7 @@ The system:
 
 1. Extracts document text
 2. Splits the text into smaller chunks
-3. Creates embeddings
+3. Creates embeddings using a local sentence-transformer model
 4. Stores the embeddings in FAISS
 5. Retrieves relevant sections
 6. Sends the relevant context to the AI model
@@ -215,7 +216,8 @@ The workflow is:
                         │
                         ▼
              ┌─────────────────────┐
-             │ OpenAI Embeddings   │
+             │ Local Embeddings    │
+             │ sentence-transformer│
              └──────────┬──────────┘
                         │
                         ▼
@@ -233,5 +235,5 @@ The workflow is:
                         ▼
              ┌─────────────────────┐
              │     AI Analysis     │
-             │     via OpenAI      │
+             │     via Groq        │
              └─────────────────────┘

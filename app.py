@@ -62,9 +62,14 @@ with st.sidebar:
     st.divider()
 
     st.subheader("API Keys")
+    try:
+        default_groq = st.secrets.get("GROQ_API_KEY", "")
+    except Exception:
+        default_groq = os.getenv("GROQ_API_KEY", "")
+
     groq_key = st.text_input(
         "Groq API Key",
-        value=os.getenv("GROQ_API_KEY", ""),
+        value=default_groq,
         type="password",
     )
     virustotal_key = st.text_input(

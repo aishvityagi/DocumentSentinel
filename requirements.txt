@@ -9,3 +9,5 @@ langchain-core
 langchain-openai
 langchain-text-splitters
 faiss-cpu
+groq
+sentence-transformers
